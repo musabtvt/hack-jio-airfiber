@@ -1,0 +1,52 @@
+# ==============================================================================
+# OpenWrt UCI Wireless Template for MediaTek Filogic 830 (MT7986 + MT7975)
+# Dual-Band Wi-Fi 6 with multicast-to-unicast DHCP drop fix & legacy compatibility
+#
+# NOTE ON DTS PATH:
+# - On Sercomm JIDU6401 (Filogic 830 MT7986), modern OpenWrt kernel path is:
+#     'platform/soc/18000000.wifi' (2.4G) and 'platform/soc/18000000.wifi+1' (5G)
+# - On generic / older Filogic builds, path may be:
+#     'platform/18000000.wmac' and 'platform/18000000.wmac+1'
+# If manual editing, run `uci show wireless` on your router to check existing device paths!
+# ==============================================================================
+
+# 2.4GHz Radio (MT7986 802.11b/g/n)
+# HT20 + WPA2-PSK (psk2) ensures 100% compatibility with older laptops & smart home devices
+config wifi-device 'radio0'
+	option type 'mac80211'
+	option path 'platform/soc/18000000.wifi'
+	option band '2g'
+	option channel 'auto'
+	option htmode 'HT20'
+	option country 'IN'
+	option cell_density '0'
+
+config wifi-iface 'default_radio0'
+	option device 'radio0'
+	option network 'lan'
+	option mode 'ap'
+	option ssid 'OpenWrt-Jio5G-2.4G'
+	option encryption 'psk2'
+	option key 'ChangeThisStrongPassword123'
+	option multicast_to_unicast '0'
+
+# 5GHz Radio (MT7986 802.11a/n/ac/ax) - Wi-Fi 6 High Throughput
+# Default htmode is HE80 (instant beaconing on non-DFS channels 36-48).
+# Change to HE160 for 2402 Mbps link speed (note: takes 60-120s for DFS radar check).
+config wifi-device 'radio1'
+	option type 'mac80211'
+	option path 'platform/soc/18000000.wifi+1'
+	option band '5g'
+	option channel '36'
+	option htmode 'HE80'
+	option country 'IN'
+	option cell_density '0'
+
+config wifi-iface 'default_radio1'
+	option device 'radio1'
+	option network 'lan'
+	option mode 'ap'
+	option ssid 'OpenWrt-Jio5G-5G'
+	option encryption 'sae-mixed'
+	option key 'ChangeThisStrongPassword123'
+	option multicast_to_unicast '0'
